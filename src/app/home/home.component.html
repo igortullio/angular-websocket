@@ -1,0 +1,21 @@
+<h1>WebSocket</h1>
+<form>
+  <div class="form-group">
+    <label for="message">Messagem</label>
+    <input
+      type="text"
+      class="form-control"
+      id="message"
+      aria-describedby="message"
+      placeholder="Digite a mensagem"
+      [(ngModel)]="mensagem"
+      name="mensagem"
+    />
+  </div>
+  <button type="submit" class="btn btn-primary" (click)="sendMensage()">
+    Enviar
+  </button>
+</form>
+<div class="jumbotron mt-4" *ngIf="mensagemRecebida">
+  <h1 class="display-4">{{ mensagemRecebida }}</h1>
+</div>

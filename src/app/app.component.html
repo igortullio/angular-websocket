@@ -1,23 +1,19 @@
 <div id="main-content" class="container">
-  <h1>WebSocket</h1>
-  <form>
-    <div class="form-group">
-      <label for="message">Messagem</label>
-      <input
-        type="text"
-        class="form-control"
-        id="message"
-        aria-describedby="message"
-        placeholder="Digite a mensagem"
-        [(ngModel)]="mensagem"
-        name="mensagem"
-      />
-    </div>
-    <button type="submit" class="btn btn-primary" (click)="sendMensage()">
-      Enviar
+  <div class="d-flex justify-content-center">
+    <button
+      [routerLink]="['/home']"
+      class="btn btn-sm btn-success mr-3"
+      *ngIf="!websocketService.connected"
+    >
+      Conectar
     </button>
-  </form>
-  <div class="jumbotron mt-4" *ngIf="mensagemRecebida">
-    <h1 class="display-4">{{ mensagemRecebida }}</h1>
+    <button
+      [routerLink]="['/sair']"
+      class="btn btn-sm btn-danger"
+      *ngIf="websocketService.connected"
+    >
+      Desconectar
+    </button>
   </div>
+  <router-outlet></router-outlet>
 </div>

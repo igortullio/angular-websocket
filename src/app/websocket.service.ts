@@ -10,16 +10,14 @@ import { filter, first, switchMap } from 'rxjs/operators';
 })
 export class WebsocketService implements OnDestroy {
   private client: Client;
+  private webSocketEndPoint = 'http://localhost:8080/ws/websocket';
   private state: BehaviorSubject<SocketClientState>;
-  private webSocketEndPoint = 'http://localhost:8080/ws';
   topic = '/topic/greetings';
-  reconInv: NodeJS.Timeout;
+  connected = false;
 
-  constructor() {
-    this.connectServer();
-  }
+  constructor() {}
 
-  private connectServer() {
+  connectServer() {
     this.client = over(new SockJS(this.webSocketEndPoint));
     this.state = new BehaviorSubject<SocketClientState>(
       SocketClientState.ATTEMPTING
@@ -27,11 +25,22 @@ export class WebsocketService implements OnDestroy {
     this.client.connect(
       {},
       () => {
-        clearInterval(this.reconInv);
         this.state.next(SocketClientState.CONNECTED);
+        this.connected = true;
       },
-      () => {}
+      () => {
+        this.connected = false;
+        this.reconnect();
+      }
     );
+  }
+
+  private reconnect() {
+    this.client = null;
+    this.state.next(SocketClientState.DISCONNECTED);
+    setTimeout(() => {
+      this.connectServer();
+    }, 5000);
   }
 
   private connect(): Observable<Client> {
@@ -45,9 +54,17 @@ export class WebsocketService implements OnDestroy {
   }
 
   ngOnDestroy() {
+    this.disconnected();
+  }
+
+  disconnected() {
     this.connect()
       .pipe(first())
-      .subscribe(inst => inst.disconnect(null));
+      .subscribe(inst => {
+        this.state.next(SocketClientState.DISCONNECTED);
+        inst.disconnect(null);
+        this.connected = false;
+      });
   }
 
   onMessage(
