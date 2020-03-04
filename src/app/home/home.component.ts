@@ -15,13 +15,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.websocketService.onMessage('/topic/greetings').subscribe(res => {
-      this.mensagemRecebida = res.content;
+    this.websocketService.onMessage('/topic/concluir').subscribe(res => {
+      this.mensagemRecebida = res.status;
     });
   }
 
   sendMensage() {
-    this.websocketService.send('/app/hello', this.mensagem);
+    const objeto = { codDocJurisp: this.mensagem, tipoAcao: 'CLASSIFICACAO' };
+    this.websocketService.send('/app/concluir', objeto);
   }
 
   ngOnDestroy() {

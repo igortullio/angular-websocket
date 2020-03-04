@@ -10,9 +10,8 @@ import { filter, first, switchMap } from 'rxjs/operators';
 })
 export class WebsocketService implements OnDestroy {
   private client: Client;
-  private webSocketEndPoint = 'http://localhost:8080/ws/websocket';
+  private webSocketEndPoint = 'http://localhost:8095/api/espelho-acordao/ws/websocket';
   private state: BehaviorSubject<SocketClientState>;
-  topic = '/topic/greetings';
   connected = false;
 
   constructor() {}
